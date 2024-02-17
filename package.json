@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "ts-node --project tsconfig.server.json server.ts",
+    "build:server": "tsc --project tsconfig.server.json",
+    "build:next": "next build",
+    "build": "npm run build:next && npm run build:server",
     "start": "next start",
     "lint": "next lint",
-    "db": "json-server -p 5007 -w db.json"
+    "db": "json-server -p 5007 -w db.json",
+    "preinstall": "prisma generate",
+    "prisma:create": "prisma migrate dev --create-oly"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
@@ -26,6 +30,22 @@
     "react-dom": "^18.2.0",
     "react-toastify": "^9.1.3",
     "tailwindcss": "3.3.2",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "@prisma/client": "^5.5.2",
+    "prisma": "^5.5.2",
+    "y-websocket": "^1.4.5",
+    "yjs": "^13.5.45",
+    "ws": "^8.13.0",
+    "@types/ws": "^8.5.5",
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "jotai": "^1.7.2",
+    "monaco-editor": "^0.33.0",
+    "monaco-editor-workers": "^0.33.0",
+    "monaco-languageclient": "^2.0.2",
+    "vscode-ws-jsonrpc": "^1.0.1",
+    "y-monaco": "^0.1.4",
+    "monaco-vim": "^0.3.4",
+    "normalize-url": "^7.0.3"
   }
 }

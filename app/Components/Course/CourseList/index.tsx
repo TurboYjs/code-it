@@ -12,20 +12,13 @@ interface CourseListProps {
 }
 
 const CourseList: FC<CourseListProps> = ({ courses }) => {
-  // State Modal
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectCourse, setSelectCourse] = useState<CourseType>(
-    {} as CourseType
-  );
   // Course Items
   const renderCourseItem = () => {
     return courses.map((course) => {
       return (
         <CourseItem
-          setIsOpen={setIsOpen}
           key={course.id}
           course={course}
-          setSelectCourse={setSelectCourse}
         />
       );
     });
@@ -33,11 +26,6 @@ const CourseList: FC<CourseListProps> = ({ courses }) => {
   return (
     <div className="flex flex-col space-y-3">
       {renderCourseItem()}
-      {/* Modal */}
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-        {/* Form */}
-        <EditCourse selectCourse={selectCourse} setIsOpen={setIsOpen} />
-      </Modal>
     </div>
   );
 };

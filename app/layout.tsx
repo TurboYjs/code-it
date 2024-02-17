@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Zoom } from 'react-toastify';
 import MotionWrapper from './Components/MotionWrapper';
+import {UserProvider} from "./context/UserContext";
 export const metadata = {
   title: 'Server Action',
   description: 'Server Action NextJs',
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className="text-black bg-white dark:bg-black dark:text-white capitalize">
         <MotionWrapper>
-          {children}
+          <UserProvider>
+            {children}
+          </UserProvider>
           <ToastContainer
             transition={Zoom}
             position="top-left"

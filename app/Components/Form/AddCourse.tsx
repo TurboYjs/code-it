@@ -2,20 +2,29 @@
 import { asyncAddCourse } from '@/app/Helpers/Course';
 import { ChangeEvent, FormEvent, useTransition, useState } from 'react';
 import { toast } from 'react-toastify';
+import Modal from "@/app/Components/Modal";
+import EditCourse from "@/app/Components/Form/EditCourse";
+import {CourseType} from "@/app/Models/Course";
 const AddCourse = () => {
   const [title, setTitle] = useState('');
   const [isPending, startTransition] = useTransition();
   // Form Submit
   const handleSubmitForm = async () => {
+    setIsOpen(true)
+  };
+  // State Modal
+  const [isOpen, setIsOpen] = useState(false);
+  const onSave = async (password: string) => {
     try {
-      const data = { title };
+      const data = { title, code: '', password: password||'' };
       await asyncAddCourse(data);
       toast.success('add course successfully');
+      setIsOpen(false)
     } catch (error: any) {
       toast.error('failed add course');
     }
-  };
-  return (
+  }
+    return (
     <form action={handleSubmitForm}>
       <label
         htmlFor="default-search"
@@ -43,6 +52,10 @@ const AddCourse = () => {
           add course
         </button>
       </div>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+        {/* Form */}
+        <EditCourse onAction={onSave}  />
+      </Modal>
     </form>
   );
 };

@@ -5,26 +5,17 @@ import { ChangeEvent, FormEvent, useTransition, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Dispatch, SetStateAction } from 'react';
 const EditCourse = ({
-  selectCourse,
-  setIsOpen,
+  onAction
 }: {
-  selectCourse: CourseType;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  onAction: Function
 }) => {
   // State Select Course(Edit)
-  const [title, setTitle] = useState(selectCourse.title);
+  const [title, setTitle] = useState('');
   const [isPending, startTransition] = useTransition();
   // Edit Course Submit
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      const data = { title, id: selectCourse.id };
-      await asyncEditCourse(data);
-      toast.success('edit course successfully');
-      setIsOpen(false);
-    } catch (error: any) {
-      toast.error('failed edit course');
-    }
+    e.preventDefault();
+    onAction(title)
   };
   return (
     <form
@@ -39,7 +30,7 @@ const EditCourse = ({
         type="search"
         id="default-search"
         className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 placeholder:capitalize"
-        placeholder="add course..."
+        placeholder="password..."
         autoComplete="off"
         required
       />

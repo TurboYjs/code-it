@@ -4,17 +4,14 @@ import { FC } from 'react';
 import { asyncDeleteCourse } from '@/app/Helpers/Course';
 import { toast } from 'react-toastify';
 import { Dispatch, SetStateAction } from 'react';
+import {useRouter} from "next/navigation";
 // Type
 interface CourseItemProps {
   course: CourseType;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-  setSelectCourse: Dispatch<SetStateAction<CourseType>>;
 }
 
 const CourseItem: FC<CourseItemProps> = ({
   course,
-  setIsOpen,
-  setSelectCourse,
 }) => {
   // Delete Action
   const handleDeleteCourse = async () => {
@@ -25,11 +22,10 @@ const CourseItem: FC<CourseItemProps> = ({
       toast.error('error deleting course');
     }
   };
-  // Edit Modal
-  const handleOpenEditModal = () => {
-    setSelectCourse(course);
-    setIsOpen(true);
-  };
+  const router = useRouter()
+  const handleOpenEditPage = () => {
+    router.push('/courses/' + course.id)
+  }
 
   return (
     <div className="  bg-purple-400 dark:bg-purple-700 p-2 rounded-sm flex items-center flex-row justify-between">
@@ -39,7 +35,7 @@ const CourseItem: FC<CourseItemProps> = ({
       <section className="flex flex-row space-x-2">
         <button
           type="submit"
-          onClick={handleOpenEditModal}
+          onClick={handleOpenEditPage}
           className="text-white relative bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 capitalize"
         >
           edit
