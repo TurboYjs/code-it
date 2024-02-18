@@ -1,10 +1,12 @@
 'use client';
 import { CourseType } from '@/app/Models/Course';
-import { FC } from 'react';
-import { asyncDeleteCourse } from '@/app/Helpers/Course';
+import {FC, useState} from 'react';
+import {asyncAddCourse, asyncDeleteCourse} from '@/app/Helpers/Course';
 import { toast } from 'react-toastify';
 import { Dispatch, SetStateAction } from 'react';
 import {useRouter} from "next/navigation";
+import EditCourse from "@/app/Components/Form/EditCourse";
+import Modal from "@/app/Components/Modal";
 // Type
 interface CourseItemProps {
   course: CourseType;
@@ -14,9 +16,12 @@ const CourseItem: FC<CourseItemProps> = ({
   course,
 }) => {
   // Delete Action
-  const handleDeleteCourse = async () => {
+  const handleDeleteCourse = async (password: string) => {
     try {
-      await asyncDeleteCourse(course);
+      await asyncDeleteCourse({
+        id: course.id,
+        password
+      });
       toast.success('course deleted successfully');
     } catch (error) {
       toast.error('error deleting course');
@@ -26,7 +31,8 @@ const CourseItem: FC<CourseItemProps> = ({
   const handleOpenEditPage = () => {
     router.push('/courses/' + course.id)
   }
-
+  // State Modal
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="  bg-purple-400 dark:bg-purple-700 p-2 rounded-sm flex items-center flex-row justify-between">
       <span className="text-lg">
@@ -42,12 +48,16 @@ const CourseItem: FC<CourseItemProps> = ({
         </button>
         <button
           type="submit"
-          onClick={handleDeleteCourse}
+          onClick={()=> setIsOpen(true)}
           className="text-white relative bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 capitalize"
         >
           delete
         </button>
       </section>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+        {/* Form */}
+        <EditCourse onAction={handleDeleteCourse}  />
+      </Modal>
     </div>
   );
 };
