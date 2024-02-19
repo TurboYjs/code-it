@@ -11,7 +11,8 @@
     "lint": "next lint",
     "db": "json-server -p 5007 -w db.json",
     "preinstall": "prisma generate",
-    "prisma:create": "prisma migrate dev --create-oly"
+    "prisma:create": "prisma migrate dev --create-only",
+    "prisma:db:sync": "prisma db pull"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",

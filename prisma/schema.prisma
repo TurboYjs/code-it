@@ -15,4 +15,5 @@ model Snippet {
   title String
   code String
   password String  @default("")
+  language String  @default("")
 }

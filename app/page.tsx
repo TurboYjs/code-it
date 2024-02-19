@@ -13,7 +13,7 @@ const Home = async () => {
         <AddCourse />
         {courses.length === 0 ? (
           <p className="text-2xl text-center font-bold dark:text-orange-400 text-orange-700">
-            No courses have been added
+            No snippets have been added
           </p>
         ) : (
           <CourseList courses={courses} />
