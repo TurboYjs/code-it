@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import 'monaco-editor/esm/vs/editor/editor.all.js';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -6,16 +6,18 @@ import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution.js';
 import 'monaco-editor/esm/vs/basic-languages/java/java.contribution.js';
 import 'monaco-editor/esm/vs/basic-languages/python/python.contribution.js';
 import { buildWorkerDefinition } from 'monaco-editor-workers';
+// @ts-ignore
 import { initVimMode } from 'monaco-vim';
 import { MonacoServices } from 'monaco-languageclient';
 import { getOrCreateModel, usePrevious, useUpdate } from './utils';
 import { EditorProps } from './monaco-editor-types';
 import createLSPConnection from './lsp';
+import { MonacoBinding } from 'y-monaco';
 
 buildWorkerDefinition(
-  'monaco-workers',
-  new URL('', window.location.href).href,
-  false
+    'monaco-workers',
+    new URL('', window.location.href).href,
+    false
 );
 
 monaco.languages.register({
@@ -32,48 +34,56 @@ const viewStates = new Map();
 window.monaco = monaco;
 
 export default function MonacoEditor({
-  path,
-  theme,
-  options,
-  saveViewState = true,
-  onMount,
-  language,
-  className,
-  value = '',
-  onBeforeDispose,
-  vim = false,
-  lspEnabled = false,
-  onChange
-}: EditorProps) {
+                                       path,
+                                       theme,
+                                       options,
+                                       saveViewState = true,
+                                       onMount,
+                                       language,
+                                       className,
+                                       value = '',
+                                       onBeforeDispose,
+                                       vim = false,
+                                       lspEnabled = false,
+                                       yjsInfo,
+                                        onChange
+                                     }: EditorProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [editor, setEditor] =
+      useState<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   useEffect(() => {
     const modelPath = `file:///home/thecodingwizard/${path ?? 'default'}`;
 
     editorRef.current = monaco.editor.create(
-      ref.current!,
-      {
-        model: getOrCreateModel(monaco, value, language, modelPath),
-        automaticLayout: true,
-        theme: theme,
-        lightbulb: {
-          enabled: true,
+        ref.current!,
+        {
+          model: getOrCreateModel(monaco, value, language, modelPath),
+          automaticLayout: true,
+          theme: theme,
+          lightbulb: {
+            enabled: true,
+          },
+          language: language,
+          inlayHints: {
+            enabled: false,
+          },
+          ...options,
         },
-        language: language,
-        ...options,
-      },
-      {}
+        {}
     );
+      editorRef.current.onDidChangeModelContent((event) => {
+          onChange(editorRef.current?.getModel()?.getValue())
+      });
+    setEditor(editorRef.current);
+
     if (saveViewState) {
       editorRef.current.restoreViewState(viewStates.get(modelPath));
     }
 
     if (onMount) {
       onMount(editorRef.current, monaco);
-      editorRef.current?.getModel()?.onDidChangeContent((event) => {
-        onChange(editorRef.current?.getModel().getValue())
-      });
     }
 
     return () => {
@@ -83,26 +93,39 @@ export default function MonacoEditor({
         editorRef.current.getModel()?.dispose();
         // this throws some model is already disposed error? so ig just don't?
         editorRef.current.dispose();
+        editorRef.current = null;
       } else {
         console.error("Shouldn't happen??");
       }
+      setEditor(null);
     };
   }, []);
 
   useEffect(() => {
-    // TODO fix LSP connection
-    if (lspEnabled && false) {
-      return createLSPConnection();
-    }
-  }, [lspEnabled]);
+    if (!yjsInfo || !editor) return;
+    const monacoBinding = new MonacoBinding(
+        yjsInfo.yjsText,
+        editor.getModel()!,
+        new Set([editor]),
+        yjsInfo.yjsAwareness
+    );
+    return () => {
+      // if editorRef.current is null, then the editor was probably already destroyed
+      if (editorRef.current) monacoBinding.destroy();
+    };
+  }, [editor, yjsInfo]);
+
+  // useEffect(() => {
+  //   // TODO fix LSP connection
+  //   if (lspEnabled) {
+  //     return createLSPConnection();
+  //   }
+  // }, [lspEnabled]);
 
   useEffect(() => {
     if (vim) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let editorMode: any;
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       const statusNode = document.querySelector('.status-node');
       editorMode = initVimMode(editorRef.current, statusNode);
 
@@ -118,11 +141,11 @@ export default function MonacoEditor({
 
     if (model !== editorRef.current!.getModel()) {
       saveViewState &&
-        viewStates.set(previousPath, editorRef.current!.saveViewState());
+      viewStates.set(previousPath, editorRef.current!.saveViewState());
       editorRef.current!.setModel(model);
 
       saveViewState &&
-        editorRef.current!.restoreViewState(viewStates.get(path));
+      editorRef.current!.restoreViewState(viewStates.get(path));
     }
   }, [path]);
 
@@ -151,8 +174,8 @@ export default function MonacoEditor({
 
   useUpdate(() => {
     monaco.editor.setModelLanguage(
-      editorRef.current!.getModel()!,
-      language ?? 'plaintext'
+        editorRef.current!.getModel()!,
+        language ?? 'plaintext'
     );
   }, [language]);
 
@@ -162,8 +185,8 @@ export default function MonacoEditor({
   }, [options]);
 
   return (
-    <div className="flex relative h-full">
-      <div className={className} ref={ref} style={{ width: '100%' }}></div>
-    </div>
+      <div className="flex relative h-full">
+        <div className={className} ref={ref} style={{ width: '100%' }}></div>
+      </div>
   );
 }

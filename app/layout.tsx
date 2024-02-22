@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="text-black bg-white dark:bg-black dark:text-white capitalize">
+      <body className="text-black bg-white dark:bg-black dark:text-white">
         <MotionWrapper>
           <UserProvider>
             {children}

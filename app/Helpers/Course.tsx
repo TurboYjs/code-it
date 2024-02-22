@@ -58,7 +58,7 @@ const asyncDeleteCourse = async (data: Pick<CourseType, "id" | "password">): Pro
   }
 };
 
-const asyncEditCourse = async (data: Pick<CourseType, "id"| "code" | "password">): Promise<void> => {
+const asyncEditCourse = async (data: Pick<CourseType, "id"| "code" | "password"| "language">): Promise<void> => {
   try {
     // await baseApi.patch(`/courses/${data.id}`, {
     //   title: data.title,
@@ -75,7 +75,7 @@ const asyncEditCourse = async (data: Pick<CourseType, "id"| "code" | "password">
     }
     await db.snippet.update({
       where: { id: data.id },
-      data: { code: data.code },
+      data: { code: data.code, language: data.language },
     });
     revalidatePath(`/`);
   } catch (error: any) {

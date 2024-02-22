@@ -14,9 +14,12 @@ const AddCourse = () => {
   };
   // State Modal
   const [isOpen, setIsOpen] = useState(false);
-  const onSave = async (password: string) => {
+  const onSave = async ({
+                          password,
+      language
+                        }: Pick<CourseType, 'password'| 'language'>) => {
     try {
-      const data = { title, code: '', password: password||'' };
+      const data = { title, code: '', password: password||'',language: language||'' };
       await asyncAddCourse(data);
       toast.success('add snippet successfully');
       setIsOpen(false)

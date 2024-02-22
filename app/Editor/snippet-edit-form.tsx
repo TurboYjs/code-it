@@ -9,6 +9,8 @@ import Modal from "@/app/Components/Modal";
 import EditCourse from "@/app/Components/Form/EditCourse";
 import {CourseType} from "@/app/Models/Course";
 import {useRouter} from "next/navigation";
+import defaultCode from "@/app/scripts/defaultCode";
+import {useUserContext} from "@/app/context/UserContext";
 interface SnippetEditFormProps {
   snippet: Snippet;
   // id: number
@@ -26,22 +28,19 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
   };
 
   const onAction = async ()=> {
-      if (snippet.password !== '') {
-          setIsOpen(true)
-      } else {
-          onSave('')
-      }
+      setIsOpen(true)
   }
   const router = useRouter()
   const onHome = () => {
       router.push('/')
   }
-  const onSave = async (title: string) => {
+  const onSave = async ({password, language}: Pick<CourseType, 'password'| 'language'>) => {
       try {
           // const data = {title, id: selectCourse.id};
           await asyncEditCourse({
               id: snippet.id,
-              password: title,
+              password: password,
+              language: language,
               code: code
           });
           toast.success('edit course successfully');
@@ -50,30 +49,47 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
           toast.error('failed edit course');
       }
   }
+  const {userData} = useUserContext()
+  const {lightMode, tabSize} = userData
+  const lang = snippet.language
   return (
       <div className="h-[100vh] flex flex-col">
           <div className="flex-1 mt-8">
               <LazyRealtimeEditor
-                  theme={'vs-dark'}
-                  language={'plaintext'}
-                  saveViewState={false}
-                  path="input"
-                  dataTestId="input-editor"
-                  options={{
-                      minimap: {enabled: false},
-                      automaticLayout: false,
-                      insertSpaces: false,
-                      readOnly: false,
-                  }}
+                  theme={lightMode ? 'light' : 'vs-dark'}
+                  language={{ cpp: 'cpp', java: 'java', py: 'python' }[lang]}
+                  path={`myfile.${lang}`}
+                  options={
+                      {
+                          minimap: { enabled: false },
+                          automaticLayout: true,
+                          tabSize: tabSize,
+                          insertSpaces: false,
+                          readOnly: false,
+                          'bracketPairColorization.enabled': true, // monaco doesn't expect an IBracketPairColorizationOptions
+
+                          // this next option is to prevent annoying autocompletes
+                          // ex. type return space and it adds two spaces + semicolon
+                          // ex. type vecto< and it autocompletes weirdly
+                          acceptSuggestionOnCommitCharacter: false,
+                          // suggestOnTriggerCharacters: false,
+                      } as any
+                  }
                   onMount={e => {
-                      // setInputEditor(e);
                       setTimeout(() => {
                           e.layout();
+                          e.focus();
                       }, 0);
                   }}
-                  defaultValue={snippet.code}
-                  onChange={handleEditorChange}
-                  yjsDocumentId={snippet.id.toString()}
+                  defaultValue={code}
+                  value={code}
+                  yjsDocumentId={`${userData.id}.${lang}`}
+                  useEditorWithVim={true}
+                  lspEnabled={lang === 'cpp'}
+                  dataTestId="code-editor"
+                  onChange={(val: string)=> {
+                      setCode(val)
+                  }}
               />
           </div>
           <form action={onAction}>

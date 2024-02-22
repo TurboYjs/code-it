@@ -3,6 +3,7 @@ export interface CourseType {
   title: string;
   code: string;
   password: string;
+  language: string;
 }
 
 export type CourseResponse = CourseType[];

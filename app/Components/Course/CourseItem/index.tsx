@@ -16,7 +16,7 @@ const CourseItem: FC<CourseItemProps> = ({
   course,
 }) => {
   // Delete Action
-  const handleDeleteCourse = async (password: string) => {
+  const handleDeleteCourse = async ({password}:{password: string}) => {
     try {
       await asyncDeleteCourse({
         id: course.id,
@@ -57,7 +57,7 @@ const CourseItem: FC<CourseItemProps> = ({
           </section>
           <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
             {/* Form */}
-            <EditCourse onAction={handleDeleteCourse}/>
+            <EditCourse onAction={handleDeleteCourse} action={'delete'}/>
           </Modal>
         </div>
       </Fragment>

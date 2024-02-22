@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-export type Language = 'cpp' | 'java' | 'py';
+export type Language = 'cpp' | 'java' | 'py' | string;
 export const LANGUAGES: { label: string; value: Language }[] = [
   {
     label: 'C++',
@@ -24,7 +24,7 @@ export const LANGUAGES: { label: string; value: Language }[] = [
 ];
 
 export type UserContextType = {
-  userData: (UserData & { id: string }) | null;
+  userData: (UserData & { id: string });
 };
 
 export type UserData = {

@@ -2,8 +2,8 @@ import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
 type Theme = 'vs-dark' | 'light';
 
 export type OnMount = (
-  editor: Monaco.editor.IStandaloneCodeEditor,
-  monaco: typeof Monaco
+    editor: Monaco.editor.IStandaloneCodeEditor,
+    monaco: typeof Monaco
 ) => void;
 
 export interface EditorProps {
@@ -117,5 +117,14 @@ export interface EditorProps {
   vim?: boolean;
 
   lspEnabled?: boolean;
-  onChange?: Function;
+
+  /**
+   * If provided, the code editor should create a yjs binding with the given information
+   */
+  yjsInfo?: {
+    yjsText: any;
+    yjsAwareness: any;
+  } | null;
+
+  onChange: Function;
 }

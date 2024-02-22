@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import db from "@/app/Helpers/prisma";
 import SnippetEditForm from "@/app/Editor/snippet-edit-form";
 
@@ -19,7 +18,6 @@ export default async function SnippetEditPage(props: SnippetEditPageProps) {
     if (!snippet) {
         return notFound();
     }
-
     return (
         <SnippetEditForm snippet={snippet}/>
     );

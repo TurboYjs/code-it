@@ -62,7 +62,7 @@ export default function createLSPConnection() {
       return;
     }
 
-    if (message.id === 0 && message.result.capabilities) {
+    if (message.id === 0 && message.result?.capabilities) {
       // assume this is the first message from the server
       // and that connection is successfully established
       notify('Connected');
