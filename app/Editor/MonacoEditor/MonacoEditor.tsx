@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import 'monaco-editor/esm/vs/editor/editor.all.js';
+// import 'monaco-editor/esm/vs/editor/editor.all.js';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution.js';
-import 'monaco-editor/esm/vs/basic-languages/java/java.contribution.js';
-import 'monaco-editor/esm/vs/basic-languages/python/python.contribution.js';
+// import 'monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution.js';
+// import 'monaco-editor/esm/vs/basic-languages/java/java.contribution.js';
+// import 'monaco-editor/esm/vs/basic-languages/python/python.contribution.js';
+// import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution.js';
+// import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution.js';
 import { buildWorkerDefinition } from 'monaco-editor-workers';
 // @ts-ignore
 import { initVimMode } from 'monaco-vim';
@@ -14,19 +16,62 @@ import { EditorProps } from './monaco-editor-types';
 import createLSPConnection from './lsp';
 import { MonacoBinding } from 'y-monaco';
 
-buildWorkerDefinition(
-    'monaco-workers',
-    new URL('', window.location.href).href,
-    false
-);
-
-monaco.languages.register({
-  id: 'cpp',
-  extensions: ['.cpp'],
-  aliases: ['cpp'],
-});
-
-MonacoServices.install(); // todo disposable here...
+// buildWorkerDefinition(
+//     'monaco-workers',
+//     new URL('', window.location.href).href,
+//     false
+// );
+// buildWorkerDefinition('./node_modules/monaco-editor-workers/dist/workers', import.meta.url, false);
+//
+// monaco.languages.register({
+//   id: 'cpp',
+//   extensions: ['.cpp'],
+//   aliases: ['cpp'],
+// });
+//
+// MonacoServices.install(); // todo disposable here...
+//@ts-ignore
+self.MonacoEnvironment = {
+    getWorker: function (moduleId: any, label: string) {
+        if (label === 'json') {
+            return new Worker(
+                new URL(
+                    'monaco-editor/esm/vs/language/json/json.worker.js',
+                    import.meta.url
+                )
+            );
+        }
+        if (label === 'css' || label === 'scss' || label === 'less') {
+            return new Worker(
+                new URL(
+                    'monaco-editor/esm/vs/language/css/css.worker.js',
+                    import.meta.url
+                )
+            );
+        }
+        if (label === 'html' || label === 'handlebars' || label === 'razor') {
+            return new Worker(
+                new URL(
+                    'monaco-editor/esm/vs/language/html/html.worker.js',
+                    import.meta.url
+                )
+            );
+        }
+        if (label === 'typescript' || label === 'javascript') {
+            return new Worker(
+                new URL(
+                    '/node_modules/monaco-editor/esm/vs/language/typescript/ts.worker.js',
+                    import.meta.url
+                ),
+                { type: 'module' }
+            );
+        }
+        return new Worker(
+            new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url),
+            { type: 'module' }
+        );
+    },
+};
 
 const viewStates = new Map();
 
@@ -52,10 +97,19 @@ export default function MonacoEditor({
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [editor, setEditor] =
       useState<monaco.editor.IStandaloneCodeEditor | null>(null);
-
+    useEffect(() => {
+        if (editorRef.current !== null) {
+            const model = editorRef.current.getModel();
+            if (model !== null) {
+                model.onDidChangeContent(() => {
+                    onChange(model.getValue());
+                });
+            }
+        }
+    }, [onChange, editorRef]);
   useEffect(() => {
     const modelPath = `file:///home/thecodingwizard/${path ?? 'default'}`;
-
+    console.log(language)
     editorRef.current = monaco.editor.create(
         ref.current!,
         {
@@ -73,9 +127,6 @@ export default function MonacoEditor({
         },
         {}
     );
-      editorRef.current.onDidChangeModelContent((event) => {
-          onChange(editorRef.current?.getModel()?.getValue())
-      });
     setEditor(editorRef.current);
 
     if (saveViewState) {

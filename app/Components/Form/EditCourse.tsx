@@ -3,14 +3,16 @@ import { ChangeEvent, FormEvent, useTransition, useState } from 'react';
 import {LANGUAGES} from "@/app/context/UserContext";
 const EditCourse = ({
   onAction,
-    action='edit'
+    action='edit',
+    lang
 }: {
   onAction: Function,
-  action?: 'delete' | 'edit'
+  action?: 'delete' | 'edit',
+  lang?: string
 }) => {
   // State Select Course(Edit)
   const [password, setPassword] = useState('');
-  const [language, setLanguage] = useState(LANGUAGES[0].value);
+  const [language, setLanguage] = useState(lang || LANGUAGES[0].value);
   const [isPending, startTransition] = useTransition();
   // Edit Course Submit
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {

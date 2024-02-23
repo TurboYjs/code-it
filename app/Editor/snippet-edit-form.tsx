@@ -10,7 +10,8 @@ import EditCourse from "@/app/Components/Form/EditCourse";
 import {CourseType} from "@/app/Models/Course";
 import {useRouter} from "next/navigation";
 import defaultCode from "@/app/scripts/defaultCode";
-import {useUserContext} from "@/app/context/UserContext";
+import {LANGUAGES_MONACO, useUserContext} from "@/app/context/UserContext";
+import { useCopyToClipboard } from 'usehooks-ts'
 interface SnippetEditFormProps {
   snippet: Snippet;
   // id: number
@@ -52,16 +53,22 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
   const {userData} = useUserContext()
   const {lightMode, tabSize} = userData
   const lang = snippet.language
+    const [copiedText, copy] = useCopyToClipboard()
+    const onShare = () => {
+        copy(window.location.href).then(()=> {
+            toast.success('share copied successfully');
+        })
+  }
   return (
       <div className="h-[100vh] flex flex-col">
           <div className="flex-1 mt-8">
               <LazyRealtimeEditor
                   theme={lightMode ? 'light' : 'vs-dark'}
-                  language={{ cpp: 'cpp', java: 'java', py: 'python' }[lang]}
+                  language={LANGUAGES_MONACO[lang]}
                   path={`myfile.${lang}`}
                   options={
                       {
-                          minimap: { enabled: false },
+                          minimap: {enabled: false},
                           automaticLayout: true,
                           tabSize: tabSize,
                           insertSpaces: false,
@@ -87,7 +94,7 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
                   useEditorWithVim={true}
                   lspEnabled={lang === 'cpp'}
                   dataTestId="code-editor"
-                  onChange={(val: string)=> {
+                  onChange={(val: string) => {
                       setCode(val)
                   }}
               />
@@ -98,6 +105,14 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
                   className="rounded p-2 mt-4 border-blue-500 bg-blue-500 text-white w-full"
               >
                   Save
+              </button>
+          </form>
+          <form action={onShare}>
+              <button
+                  type="submit"
+                  className="rounded p-2 mt-4 border-yellow-500 bg-yellow-500 text-white w-full"
+              >
+                  Share
               </button>
           </form>
           <form action={onHome}>
@@ -112,7 +127,7 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
           {/* Modal */}
           <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
               {/* Form */}
-              <EditCourse onAction={onSave}  />
+              <EditCourse onAction={onSave} lang={snippet.language}/>
           </Modal>
       </div>
   );

@@ -9,19 +9,46 @@ import {
 
 export type Language = 'cpp' | 'java' | 'py' | string;
 export const LANGUAGES: { label: string; value: Language }[] = [
+  // {
+  //   label: 'C++',
+  //   value: 'cpp',
+  // },
+  // {
+  //   label: 'Java',
+  //   value: 'java',
+  // },
+  // {
+  //   label: 'Python 3.8.1',
+  //   value: 'py',
+  // },
   {
-    label: 'C++',
-    value: 'cpp',
+    label: 'javascript',
+    value: 'js',
   },
   {
-    label: 'Java',
-    value: 'java',
+    label: 'typescript',
+    value: 'ts',
   },
   {
-    label: 'Python 3.8.1',
-    value: 'py',
+    label: 'css',
+    value: 'css',
+  },
+  {
+    label: 'html',
+    value: 'html',
+  },
+  {
+    label: 'json',
+    value: 'json',
   },
 ];
+
+export const LANGUAGES_MONACO = LANGUAGES.reduce((pre,cur)=> {
+  return {
+    ...pre,
+    [cur.value]: cur.label
+  }
+}, {}) as {[key: string]: string};
 
 export type UserContextType = {
   userData: (UserData & { id: string });
