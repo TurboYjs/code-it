@@ -8,20 +8,42 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - name: Deploy with rsync
+        uses: BuildPC/rsync-with-ssh-github-actions@master
+        env:
+          HELLO: cool
+          MESSAGE: hello world
         with:
-          node-version: 18
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
-          chmod 600 ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa.pub
-          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
-      - name: copy builds to server
-        run: |
-          rsync -vrm   ./* ${{ secrets.USER_IP }}:/var/www/code-it/
-          ssh ${{ secrets.USER_IP }} "cd /var/www/code-it/ && docker compose up "
+          key: ${{ secrets.SSH_PUB_KEY }}
+          host: ${{ secrets.IP }}
+          port: 22
+          user: root
+          destination: /var/www/code-it/
+          # runs this on remove server
+          ssh_before: |
+            echo $HELLO
+            echo $MESSAGE
+            ls -lath
+
+          # then run these commands
+          ssh_after: |
+            echo $HELLO
+            echo $MESSAGE
+            ls -lath
+#      - uses: actions/checkout@master
+#      - name: Install Node.js
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#      - name: Setup SSH
+#        run: |
+#          mkdir -p ~/.ssh/
+#          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
+#          echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
+#          chmod 600 ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa.pub
+#          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
+#      - name: copy builds to server
+#        run: |
+#          rsync -vrm   ./* ${{ secrets.USER_IP }}:/var/www/code-it/
+#          ssh ${{ secrets.USER_IP }} "cd /var/www/code-it/ && docker compose up "
