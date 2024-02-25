@@ -13,10 +13,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-#      - uses: pnpm/action-setup@v2
-#        name: Install pnpm
-#        with:
-#          version: 8
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
@@ -27,8 +23,5 @@ jobs:
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
       - name: copy builds to server
         run: |
-#          npm i
-#          npm run build
-#          find . -name "node_modules" -exec rm -rf '{}' +
           rsync -vrm   ./* ${{ secrets.USER_IP }}:/var/www/code-it/
           ssh ${{ secrets.USER_IP }} "cd /var/www/code-it/ && docker compose up "
