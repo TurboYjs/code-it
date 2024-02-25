@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "code-sync",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,7 @@
     "build:server": "tsc --project tsconfig.server.json",
     "build:next": "next build",
     "build": "npm run build:next && npm run build:server",
-    "start": "next start",
+    "start": "pm2 start yarn --name 'code-sync' --interpreter bash -- start",
     "lint": "next lint",
     "db": "json-server -p 5007 -w db.json",
     "preinstall": "prisma generate",
