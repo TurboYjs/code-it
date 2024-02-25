@@ -8,29 +8,18 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy with rsync
-        uses: BuildPC/rsync-with-ssh-github-actions@master
-        env:
-          HELLO: cool
-          MESSAGE: hello world
+      - uses: actions/checkout@master
+      - name: SSH Deploy
+        # Use the 'appleboy/ssh-action' action for SSH deployment
+        uses: appleboy/ssh-action@master
         with:
-          key: ${{ secrets.SSH_PUB_KEY }}
-          host: ${{ secrets.IP }}
-          port: 22
-          user: root
-          destination: /var/www/code-it/
-          # runs this on remove server
-          ssh_before: |
-            echo $HELLO
-            echo $MESSAGE
-            ls -lath
-
-          # then run these commands
-          ssh_after: |
-            echo $HELLO
-            echo $MESSAGE
-            ls -lath
-#      - uses: actions/checkout@master
+          host: ${{ secrets.USER_IP }} # Your server's IP address
+          username: root # Your server's username
+          key: ${{ secrets.SSH_PRIV_KEY }} # Your server's SSH private key
+          script: |
+            cd /var/www/
+            git pull
+            docker compose up
 #      - name: Install Node.js
 #        uses: actions/setup-node@v3
 #        with:
