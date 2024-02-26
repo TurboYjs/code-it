@@ -9,30 +9,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: SSH Deploy
-        # Use the 'appleboy/ssh-action' action for SSH deployment
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.USER_IP }} # Your server's IP address
-          username: root # Your server's username
-          key: ${{ secrets.SSH_PRIV_KEY }} # Your server's SSH private key
-          script: |
-            cd /var/www/
-            git pull
-            docker compose up
+#      - name: SSH Deploy
+#        # Use the 'appleboy/ssh-action' action for SSH deployment
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.USER_IP }} # Your server's IP address
+#          username: root # Your server's username
+#          key: ${{ secrets.SSH_PRIV_KEY }} # Your server's SSH private key
+#          script: |
+#            cd /var/www/
+#            git pull
+#            docker compose up
 #      - name: Install Node.js
 #        uses: actions/setup-node@v3
 #        with:
 #          node-version: 18
-#      - name: Setup SSH
-#        run: |
-#          mkdir -p ~/.ssh/
-#          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
-#          echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
-#          chmod 600 ~/.ssh/id_rsa
-#          chmod 600 ~/.ssh/id_rsa.pub
-#          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
-#      - name: copy builds to server
-#        run: |
-#          rsync -vrm   ./* ${{ secrets.USER_IP }}:/var/www/code-it/
-#          ssh ${{ secrets.USER_IP }} "cd /var/www/code-it/ && docker compose up "
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa.pub
+          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
+      - name: copy builds to server
+        run: |
+          rsync -vrm   ./* ${{ secrets.USER_IP }}:/var/www/code-it/
+          ssh ${{ secrets.USER_IP }} "cd /var/www/code-it/ && docker compose up "
