@@ -11,6 +11,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Setup SSH
         run: |
+          mkdir -p ~/.ssh/
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
       - name: copy builds to server
         run: |
