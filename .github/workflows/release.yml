@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
-          chmod 600 ~/.ssh/id_rsa.pub
-          cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
+#      - name: Setup SSH
+#        run: |
+#          mkdir -p ~/.ssh/
+#          echo "${{ secrets.PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+#          chmod 600 ~/.ssh/id_rsa.pub
+#          cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+#          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
       - name: copy builds to server
         run: |
-          rsync -vrm   ./* ${{ secrets.IP }}:/var/www/code-it/
-          ssh ${{ secrets.IP }} "cd /var/www/code-it/ && docker compose up "
+          rsync -vrm   ./* ${{ secrets.AUTH_IP }}:/var/www/code-it/
+          ssh ${{ secrets.AUTH_IP }} "cd /var/www/code-it/ && docker compose up "
 #      - name: Setup SSH
 #        run: |
 #          mkdir -p ~/.ssh/
