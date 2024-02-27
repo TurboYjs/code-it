@@ -8,14 +8,28 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Push to server
-        uses: appleboy/ssh-action@master
+      - name: Checkout the repo
+        uses: actions/checkout@v2
         with:
-          host: ${{ secrets.IP }}
-          username: root
-          password: ${{ secrets.PASSWORD }}
-          script: cd /var/www/code-it && git pull && docker compose up
+          # This will create a directory named `my-repo` and copy the repo contents to it
+          # so that you can easily upload it to your remote server
+          path: my-repo
+      - name: Upload repo to remote server
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
+          scp -o StrictHostKeyChecking=no -r  my-repo root@${{ secrets.IP }}:/var/www/code-it/
+#    steps:
+#      - uses: actions/checkout@v1
+#      - name: Push to server
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.IP }}
+#          username: root
+#          password: ${{ secrets.PASSWORD }}
+#          script: cd /var/www/code-it  && docker compose up
 #      - name: Setup SSH
 #        run: |
 #          mkdir -p ~/.ssh/
