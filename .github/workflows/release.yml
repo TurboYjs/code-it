@@ -8,15 +8,14 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh/
-          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
-      - name: copy builds to server
-        run: |
-          rsync -vrm   ./* ${{ secrets.AUTH_IP }}:/var/www/code-it/
-          ssh ${{ secrets.AUTH_IP }} "cd /var/www/code-it/ && docker compose up "
+      - uses: actions/checkout@v1
+      - name: Push to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.IP }}
+          username: root
+          password: ${{ secrets.PASSWORD }}
+          script: cd code-it && git pull
 #      - name: Setup SSH
 #        run: |
 #          mkdir -p ~/.ssh/
