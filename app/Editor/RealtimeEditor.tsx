@@ -23,7 +23,7 @@ export interface RealtimeEditorProps extends EditorProps {
 
 const WEBSOCKET_SERVER = SHOULD_USE_DEV_YJS_SERVER
     ? 'ws://localhost:3000'
-    : 'wss://yjs.usaco.guide:443';
+    : 'ws://guxukai.tech';
 
 const RealtimeEditor = ({
                           defaultValue,
