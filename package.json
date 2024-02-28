@@ -1,6 +1,6 @@
 {
   "name": "code-it",
-  "version": "0.1.1-beta.23",
+  "version": "0.1.1-beta.24",
   "private": true,
   "scripts": {
     "dev": "ts-node --project tsconfig.server.json server.ts",
