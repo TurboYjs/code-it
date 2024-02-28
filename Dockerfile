@@ -4,7 +4,7 @@ FROM node:18-alpine
 WORKDIR /usr/app
 
 # Install PM2 globally
-RUN npm install --global pm2
+#RUN npm install --global pm2
 
 ## Copy "package.json" and "package-lock.json" before other files
 ## Utilise Docker cache to save re-installing dependencies if unchanged
