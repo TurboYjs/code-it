@@ -28,7 +28,7 @@ jobs:
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           scp -o StrictHostKeyChecking=no -r  code-it root@${{ secrets.IP }}:/var/www/
-          ssh -o ServerAliveInterval=300 root@${{ secrets.IP }} "cd /var/www/code-it/ && docker compose up -d"
+          ssh -o ServerAliveInterval=300 root@${{ secrets.IP }} "cd /var/www/code-it/ && docker-compose down && docker-compose build --no-cache && docker-compose up"
 #    steps:
 #      - uses: actions/checkout@v1
 #      - name: Push to server
