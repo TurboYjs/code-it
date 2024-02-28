@@ -15,6 +15,9 @@ WORKDIR /usr/app
 
 # Copy all files
 COPY ./ ./
+RUN npm install -g nrm
+RUN nrm ls
+RUN nrm use taobao
 # Install dependencies
 RUN npm install
 # Build app
