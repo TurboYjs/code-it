@@ -15,9 +15,10 @@ WORKDIR /usr/app
 
 # Copy all files
 COPY ./ ./
-RUN npm install -g nrm
-RUN nrm ls
-RUN nrm use cnpm
+#RUN npm install -g nrm
+#RUN nrm ls
+#RUN nrm use cnpm
+RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 # Install dependencies
 RUN npm install
 # Build app
