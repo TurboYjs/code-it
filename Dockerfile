@@ -18,6 +18,12 @@ COPY ./ ./
 #RUN npm install -g nrm
 #RUN nrm ls
 #RUN nrm use cnpm
+#17 0.357   npm ---------- https://registry.npmjs.org/
+#17 0.358   yarn --------- https://registry.yarnpkg.com/
+#17 0.358   tencent ------ https://mirrors.cloud.tencent.com/npm/
+#17 0.358   cnpm --------- https://r.cnpmjs.org/
+#17 0.358   taobao ------- https://registry.npmmirror.com/
+#17 0.358   npmMirror ---- https://skimdb.npmjs.com/registry/
 RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 # Install dependencies
 RUN npm install
