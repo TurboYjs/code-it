@@ -58,7 +58,7 @@ COPY . .
 
 RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 
-RUN npm i
+RUN npm install
 RUN npm run build
 # Production image, copy all the files and run next
 FROM base AS runner
