@@ -35,8 +35,8 @@ EXPOSE 3000
 
 # Run container as non-root (unprivileged) user
 # The "node" user is provided in the Node.js Alpine base image
-USER node
-RUN chown -R $USER .next
+#USER node
+#RUN chown -R $USER .next
 # Launch app with PM2
 #CMD [ "pm2-runtime", "start", "npm", "--", "start" ]
 CMD [ "npm", "start"]
