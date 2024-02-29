@@ -50,6 +50,7 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY . .
+RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 RUN  npm install
 ENV NEXT_TELEMETRY_DISABLED 1
 
