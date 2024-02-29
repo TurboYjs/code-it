@@ -17,7 +17,7 @@ WORKDIR /usr/app
 COPY ./ ./
 RUN npm install -g nrm
 RUN nrm ls
-RUN nrm use tencent
+RUN nrm use cnpm
 # Install dependencies
 RUN npm install
 # Build app
