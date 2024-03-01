@@ -11,6 +11,7 @@ const app = next({ dev, port, hostname })
 const handle = app.getRequestHandler()
 app.prepare().then(() => {
     const server = createServer((req, res) => handle(req, res, parse(req.url, true)))
+    server.setTimeout(500000)
     const wss = new WebSocketServer({ noServer: true })
 
     wss.on("connection", async function connection(ws, req) {
