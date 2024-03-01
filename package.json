@@ -1,13 +1,13 @@
 {
   "name": "code-it",
-  "version": "0.1.1-beta.53",
+  "version": "0.1.1-beta.54",
   "private": true,
   "scripts": {
     "dev": "ts-node --project tsconfig.server.json server.ts",
     "build:server": "tsc --project tsconfig.server.json",
     "build:next": "next build",
     "build": "npm run build:next && npm run build:server",
-    "start": "node dist/server.js",
+    "start": "NODE_OPTIONS='--http-server-default-timeout=0' node dist/server.js",
     "lint": "next lint",
     "db": "json-server -p 5007 -w db.json",
     "preinstall": "prisma generate",
