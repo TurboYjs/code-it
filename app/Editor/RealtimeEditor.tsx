@@ -21,9 +21,7 @@ export interface RealtimeEditorProps extends EditorProps {
   dataTestId?: string;
 }
 
-const WEBSOCKET_SERVER = SHOULD_USE_DEV_YJS_SERVER
-    ? 'ws://localhost:3000'
-    : 'ws://guxukai.tech';
+const WEBSOCKET_SERVER = `ws://${window.location.host}`
 
 const RealtimeEditor = ({
                           defaultValue,

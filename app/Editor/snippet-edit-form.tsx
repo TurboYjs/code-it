@@ -90,7 +90,7 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
                   }}
                   defaultValue={code}
                   value={code}
-                  yjsDocumentId={`${userData.id}.${lang}`}
+                  yjsDocumentId={`${snippet.id}.${lang}`}
                   useEditorWithVim={true}
                   lspEnabled={lang === 'cpp'}
                   dataTestId="code-editor"

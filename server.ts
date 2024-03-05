@@ -6,17 +6,17 @@ const setupWSConnection = require('y-websocket/bin/utils').setupWSConnection;
 
 const dev = process.env.NODE_ENV !== 'production'
 const port = 3000
-const hostname = '0.0.0.0'
+const hostname = 'localhost'
 const app = next({ dev, port, hostname })
 const handle = app.getRequestHandler()
 app.prepare().then(() => {
     const server = createServer((req, res) => handle(req, res, parse(req.url, true)))
-    server.setTimeout(500000)
+    // server.setTimeout(500000)
     const wss = new WebSocketServer({ noServer: true })
 
     wss.on("connection", async function connection(ws, req) {
         setupWSConnection(ws, req);
-        console.log('incoming connection', ws);
+        // console.log('incoming connection', ws);
         ws.onclose = () => {
             console.log('connection closed', wss.clients.size);
         };
