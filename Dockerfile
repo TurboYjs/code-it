@@ -59,8 +59,9 @@ COPY . .
 RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 #RUN npm config set registry https://registry.npm.taobao.org
 RUN npm config get registry
-RUN npm install -g pnpm
-RUN pnpm install
+#RUN npm install -g pnpm
+#RUN pnpm install
+RUN npm install --force
 RUN npm run build
 RUN chown 777 ./.next
 EXPOSE 3000
