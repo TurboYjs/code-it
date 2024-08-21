@@ -16,22 +16,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="text-black bg-white dark:bg-black dark:text-white">
-        <MotionWrapper>
-          <UserProvider>
-            {children}
-          </UserProvider>
-          <ToastContainer
-            transition={Zoom}
-            position="top-left"
-            autoClose={1000}
-            closeOnClick={true}
-            draggable={true}
-            pauseOnHover={false}
-            style={{ textAlign: 'justify', fontSize: '1rem' }}
-          />
-        </MotionWrapper>
-      </body>
+    <body className="text-black bg-white dark:bg-black dark:text-white">
+    <MotionWrapper>
+      <UserProvider>
+        {children}
+      </UserProvider>
+      <ToastContainer
+          transition={Zoom}
+          position="top-left"
+          autoClose={1000}
+          closeOnClick={true}
+          draggable={true}
+          pauseOnHover={false}
+          style={{textAlign: 'justify', fontSize: '1rem'}}
+      />
+    </MotionWrapper>
+    <div className="fixed bottom-0 left-0 right-0 flex justify-center">
+      <a href={"https://beian.miit.gov.cn/"}> 苏ICP备2023003174号-1</a>
+    </div>
+    </body>
     </html>
   );
 }
