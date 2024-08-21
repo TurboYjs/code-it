@@ -57,7 +57,7 @@ WORKDIR /app
 COPY . .
 
 RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
-
+RUN npm config get registry
 RUN npm install
 RUN npm run build
 RUN chown 777 ./.next
